@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
 
         // check if user exists or not
         const user = await User.findOne({ email })
-        
+
         if (!user) {
             return NextResponse.json({
                 success: false,
@@ -51,14 +51,19 @@ export async function POST(request: NextRequest) {
         }
 
 
-        const token =  jwt.sign(tokenData, process.env.JWT_SECRET!)
+        const token = jwt.sign(tokenData, process.env.JWT_SECRET!)
 
         const response = NextResponse.json({
             success: true,
             message: "Login successfully...",
         })
 
-        response.cookies.set('token', token)
+        const options = {
+            httpOnly: true,
+            maxAge: 60 * 60 * 24, 
+        }   
+
+        response.cookies.set("token", token, options)
 
         return response
 
