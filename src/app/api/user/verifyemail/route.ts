@@ -10,7 +10,7 @@ connectDB
 export async function POST(request: NextRequest) {
     try {
 
-        const { token } = await request.json();
+        const {token} = await request.json();
 
         console.log(token);
 
@@ -25,10 +25,9 @@ export async function POST(request: NextRequest) {
         )
 
         if (!user) {
-            return new Response("Invalid or expired token", { status: 400 });
+            return new Response("Invalid or token expired ", { status: 400 });
         }
 
-        console.log(user);
 
         // update user veriy email status
         user.isVerified = true;
