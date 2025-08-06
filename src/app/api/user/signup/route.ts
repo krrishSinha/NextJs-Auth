@@ -3,6 +3,7 @@ import connectDB from "@/db/dbConfig";
 import User from '@/models/userModel'
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { sendEmail } from "@/helpers/mailer";
 
 
 connectDB();
@@ -11,8 +12,6 @@ export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
         const { username, email, password } = body;
-
-        console.log(body);
 
         // check if user already exists
         const user = await User.findOne({ email })
@@ -38,7 +37,10 @@ export async function POST(request: NextRequest) {
         // save the user to the database
         await newUser.save();
 
-        console.log(newUser);
+        // send verification email
+        const mailResponse = await sendEmail({ email, emailType: 'VERIFY', userId: newUser._id });
+
+        console.log(mailResponse);
 
         return NextResponse.json({
             success: true,
